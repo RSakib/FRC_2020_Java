@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
-
+import frc.robot.Input.*;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -23,16 +23,45 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-
   private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
+  private static final LogitechAttack3Joystick LeftStick = new LogitechAttack3Joystick(RobotMap.LeftJoystick_ID);
+  private static final LogitechAttack3Joystick RightStick = new LogitechAttack3Joystick(RobotMap.RightJoystick_ID);
+  private static final LogitechController Gamepad = new LogitechController(RobotMap.Gampad_ID);
 
+  //private Elevator elevator = Elevator.getInstance();
+
+  public static double getLeftThrottleInput() {
+    return LeftStick.getYAxis();
+  }
+  public static double getRightThrottleInput() {
+    return RightStick.getYAxis(); 
+  }
+  public static double getLeftSteeringInput() {
+    return LeftStick.getXAxis();
+  }
+  public static double getRightSteeringInput() {
+    return RightStick.getXAxis();
+  }
+  public static double getLeftThrottleInputInverted() {
+    return LeftStick.getYAxisInverted();
+  }
+  public static double getRightThrottleInputInverted() {
+    return RightStick.getYAxisInverted();
+  }
+  public static double getLeftSteeringInputInverted() {
+    return LeftStick.getXAxisInverted();
+  }
+  public static double getRightSteeringInputInverted() {
+    return RightStick.getXAxisInverted();
+  }
 
   /**
    * The container for the robot.  Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
+    
     configureButtonBindings();
   }
 

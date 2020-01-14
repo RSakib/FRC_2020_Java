@@ -10,6 +10,11 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.RobotContainer;
+import frc.robot.IO;
+import frc.robot.utility.*;
+import frc.robot.subsystems.Drivebase;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -17,7 +22,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
+
+
 public class Robot extends TimedRobot {
+
+  private static IO m_io;
+  Drivebase drivebase = Drivebase.getInstance();
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
@@ -30,7 +40,12 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
-    m_robotContainer = new RobotContainer();
+
+/*     m_robotContainer = new RobotContainer();
+    m_robotContainer.RobotContainer(); */
+    m_io = new IO();
+    m_io.registerControls();
+    drivebase.setCoast();
   }
 
   /**
@@ -54,10 +69,17 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    drivebase.StopDrivetrain();
+    //elevator.stopElevator();
+    //drivebase.resetEncoders();
+    //Constants.DesiredDistance = 0;
+    //Constants.DesiredHeading = 0;
+    drivebase.setCoast();
   }
 
   @Override
   public void disabledPeriodic() {
+    //Scheduler.getInstance().run();
   }
 
   /**
@@ -89,6 +111,8 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    drivebase.StopDrivetrain();
+    drivebase.setBrake();
   }
 
   /**
@@ -96,6 +120,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void teleopPeriodic() {
+    drivebase.curvature(IO.getLeftThrottleInput(), IO.getRightSteeringInputInverted());
   }
 
   @Override

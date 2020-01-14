@@ -7,9 +7,21 @@
 
 package frc.robot;
 
+import frc.robot.PID.PIDGains;
 
 /**
  * Add your docs here.
  */
 public class Constants {
+
+    public static final int HIGH_GEAR = 0;
+    public static final int LOW_GEAR = 1;
+    public static int CURRENT_GEAR = HIGH_GEAR;
+
+    public static double kTurnrateCurve = 0.1;
+    public static double kTurnrateLimit = 0.8;
+
+    public static final boolean On = true;
+    public static final boolean Off = false;
+
 }
