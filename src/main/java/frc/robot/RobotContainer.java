@@ -9,9 +9,9 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
-import edu.wpi.first.wpilibj2.command.Command;
+
+
+//import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Input.*;
 
 /**
@@ -22,12 +22,11 @@ import frc.robot.Input.*;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+
 
   private static final LogitechAttack3Joystick LeftStick = new LogitechAttack3Joystick(RobotMap.LeftJoystick_ID);
   private static final LogitechAttack3Joystick RightStick = new LogitechAttack3Joystick(RobotMap.RightJoystick_ID);
-  private static final LogitechController Gamepad = new LogitechController(RobotMap.Gampad_ID);
+  //private static final LogitechController Gamepad = new LogitechController(RobotMap.Gampad_ID);
 
   //private Elevator elevator = Elevator.getInstance();
 
@@ -80,8 +79,8 @@ public class RobotContainer {
    *
    * @return the command to run in autonomous
    */
-  public Command getAutonomousCommand() {
+  /* public Command () {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
-  }
+    
+  } */
 }

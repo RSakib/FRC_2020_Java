@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.Command;
+//import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import com.revrobotics.ColorSensorV3;
@@ -20,7 +20,8 @@ import com.revrobotics.ColorMatch;
 
 import frc.robot.RobotContainer;
 import frc.robot.IO;
-import frc.robot.utility.*;
+import frc.robot.subsystems.*;
+//import frc.robot.utility.*;
 import frc.robot.subsystems.Drivebase;
 
 
@@ -38,9 +39,10 @@ public class Robot extends TimedRobot {
 
   private static IO m_io;
   Drivebase drivebase = Drivebase.getInstance();
-  private Command m_autonomousCommand;
+  Elevator elevator = Elevator.getInstance();
+  Tray tray = Tray.getInstance();
 
-  private RobotContainer m_robotContainer;
+  //private RobotContainer m_robotContainer;
 
   private final ColorSensorV3 m_colorSensor = new ColorSensorV3(i2cPort);
 
@@ -69,6 +71,7 @@ public class Robot extends TimedRobot {
 
     m_io = new IO();
     m_io.registerControls();
+    elevator.zeroElevatorEncoder();
     drivebase.setCoast();
   }
 
@@ -116,10 +119,10 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     drivebase.StopDrivetrain();
-    //elevator.stopElevator();
+    elevator.stopElevator();
     //drivebase.resetEncoders();
-    //Constants.DesiredDistance = 0;
-    //Constants.DesiredHeading = 0;
+    Constants.DesiredDistance = 0;
+    Constants.DesiredHeading = 0;
     drivebase.setCoast();
   }
 
@@ -133,12 +136,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+    
   }
 
   /**
@@ -154,9 +152,7 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+
     drivebase.StopDrivetrain();
     drivebase.setBrake();
   }

@@ -8,15 +8,17 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Input.*;
+//import edu.wpi.first.wpilibj.PIDController;
+//import edu.wpi.first.wpilibj.PIDSource;
+//import frc.robot.Input.*;
 import frc.robot.utility.DefaultDriveTalonSRX;
 import frc.robot.RobotMap;  
 import frc.robot.Constants; 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.FollowerType;
-import com.ctre.phoenix.motorcontrol.InvertType;
+//import com.ctre.phoenix.motorcontrol.DemandType;
+//import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+//import com.ctre.phoenix.motorcontrol.FollowerType;
+//import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -28,14 +30,20 @@ import edu.wpi.first.wpilibj.Solenoid;
  */
 public class Drivebase extends SubsystemBase {
 
+  //Creates new Drivebase
   private static final Drivebase instance = new Drivebase();
+  //returnns returns value
   public static Drivebase getInstance() {
     return instance;
   }   
-  private static Solenoid mShifter_High, mShifter_Low;
-  public static DifferentialDrive mDrive;
+  //Defining Variables
+  //Drive Train
   public static DefaultDriveTalonSRX mDrive_Left_Master, mDrive_Left_B, mDrive_Left_C, mDrive_Right_Master, mDrive_Right_B, mDrive_Right_C;
+  //Drive Train Class
+  public static DifferentialDrive mDrive;
+
   private double TurnrateCurved, mLastHeadingErrorDegrees, leftvelo_,  rightvelo_, left_distance, right_distance, time;
+  private static Solenoid mShifter_High, mShifter_Low;
 
   public Drivebase() {
     mDrive_Left_Master = new DefaultDriveTalonSRX(RobotMap.mDrive_Left_A_ID);

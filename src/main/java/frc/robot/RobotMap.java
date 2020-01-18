@@ -36,8 +36,8 @@ public class RobotMap {
     public static final int mShiftHigh_ID = 2;
     public static final int mShiftLow_ID = 2;
     //Talons
-    public static final int mTalonHold_ID = 3;
-    public static final int mtalonsRelease_ID = 3;
+    public static final int mTalonsHold_ID = 3;
+    public static final int mTalonsRelease_ID = 3;
 
     //Sensors
     //Bump Switch
