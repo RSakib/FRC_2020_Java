@@ -26,8 +26,12 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotState;
+import frc.robot.PID.DummyPIDOutput;
+import frc.robot.PID.PIDDummy;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import edu.wpi.first.wpilibj.controller.*;
 
 //import frc.robot.PID.DummyPIDOutPut;
 
@@ -55,7 +59,8 @@ public class Drivebase extends SubsystemBase {
   public static DifferentialDrive mDrive;
 
   public double left_encoder_prev_distance_, right_encoder_prev_distance_, leftveloIPS_, rightveloIPS_, veloIPS_;
- // public static DummyPIDOutput PIDturnOutput, PIDleftOutput, PIDrightOutput;
+  PIDDummy PIDturnOutput;
+  public static PIDDummy PIDleftOutput, PIDrightOutput;
   
   protected static final int kVelocityControlSlot = 0;
   protected static final int kBaseLockControlSlot = 1;
@@ -125,14 +130,13 @@ public class Drivebase extends SubsystemBase {
 
     ahrs = new AHRS(SerialPort.Port.kMXP);
     
-    /* PIDturnOutput = new DummyPIDOutPut();
+     PIDturnOutput = new PIDDummy();
 
-    PIDturn = new PIDController(Constants.Turn_kP, Constants.Turn_kI, Constants.Turn_kD, Constants.Turn_kF, ahrs, PIDturnOutput, 0.02);
-    PIDturn.setInputRange(-180.0,  180.0);
+    PIDturn = new PIDController(Constants.Turn_kP, Constants.Turn_kI, Constants.Turn_kD);
+    PIDturn.enableContinuousInput(-180.0,  180.0);
     PIDturn.setOutputRange(-0.65, 0.65);
-    PIDturn.setAbsoluteTolerance(Constants.kToleranceDegrees);
-    PIDturn.setContinuous(true);
-   */
+    PIDturn.setTolerance(Constants.kToleranceDegrees);
+    //PIDturn.setContinuous(true); */
     }
   
 
