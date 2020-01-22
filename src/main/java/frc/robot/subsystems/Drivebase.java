@@ -23,6 +23,9 @@ import com.kauailabs.navx.frc.AHRS;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.RobotState;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
 
@@ -30,7 +33,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 
 import frc.robot.utility.PurePursuit.*;
 import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+//import edu.wpi.first.wpilibj2.command.PIDSubsystem;
 
 
 
@@ -51,6 +54,7 @@ public class Drivebase extends SubsystemBase {
   //Drive Train Class
   public static DifferentialDrive mDrive;
 
+  public double left_encoder_prev_distance_, right_encoder_prev_distance_, leftveloIPS_, rightveloIPS_, veloIPS_;
  // public static DummyPIDOutput PIDturnOutput, PIDleftOutput, PIDrightOutput;
   
   protected static final int kVelocityControlSlot = 0;
@@ -62,9 +66,16 @@ public class Drivebase extends SubsystemBase {
   private double TurnrateCurved, mLastHeadingErrorDegrees, leftvelo_,  rightvelo_, left_distance, right_distance, time;
   private static Solenoid mShifter_High, mShifter_Low;
 
+  private VelocityHeadingSetpoint velocityHeadingSetpoint_;
+
   public static PIDController PIDturn;
 
   private AHRS ahrs;
+
+  private Rotation2d gyro_angle;
+  private RigidTransform2d odometry;
+  private RigidTransform2d.Delta velocity;
+  private RobotState robotstate = RobotState.getInstance();
 
   public Drivebase() {
     mDrive_Left_Master = new DefaultDriveTalonSRX(RobotMap.mDrive_Left_A_ID);
@@ -168,6 +179,23 @@ public void setBrake() {
   mDrive_Right_B.setNeutralMode(NeutralMode.Brake);
   mDrive_Right_C.setNeutralMode(NeutralMode.Brake);
 }
+
+public void EnableVoltComp() {
+  mDrive_Left_Master.enableVoltageCompensation(true);
+  mDrive_Left_B.enableVoltageCompensation(true);
+  mDrive_Left_C.enableVoltageCompensation(true);
+  mDrive_Right_Master.enableVoltageCompensation(true);
+  mDrive_Right_B.enableVoltageCompensation(true);
+  mDrive_Right_C.enableVoltageCompensation(true);
+}
+public void DisableVoltComp() {
+  mDrive_Left_Master.enableVoltageCompensation(false);
+  mDrive_Left_B.enableVoltageCompensation(false);
+  mDrive_Left_C.enableVoltageCompensation(false);
+  mDrive_Right_Master.enableVoltageCompensation(false);
+  mDrive_Right_B.enableVoltageCompensation(false);
+  mDrive_Right_C.enableVoltageCompensation(false);
+}
 public void StopDrivetrain() {
   mDrive_Left_Master.set(ControlMode.PercentOutput, 0.0);
   mDrive_Right_Master.set(ControlMode.PercentOutput, 0.0);
@@ -268,6 +296,47 @@ return ahrs.getYaw();
 public double getAngle() {
 return ahrs.getAngle();
 }
+public void resetEncoders() {
+  mDrive_Left_Master.setSelectedSensorPosition(0, 0, Constants.kTimeoutms);
+  mDrive_Right_Master.setSelectedSensorPosition(0, 0, Constants.kTimeoutms);
+}
+public void ReportData() {
+  SmartDashboard.putNumber("IMU_Yaw", ahrs.getYaw());
+  //SmartDashboard.putNumber("turnoutput", getTurnOutput());
+  SmartDashboard.putNumber("leftIPS", leftveloIPS_);
+  SmartDashboard.putNumber("rightIPS", rightveloIPS_);
+  SmartDashboard.putNumber("leftraw", mDrive_Left_Master.getSelectedSensorVelocity());
+  SmartDashboard.putNumber("rightraw", mDrive_Right_Master.getSelectedSensorVelocity());
+}
+  /* Returns distance in inches */
+  public double getLeftDistanceInches() {
+    return rotationsToInches(mDrive_Left_Master.getSelectedSensorPosition()/39321.6);
+  }
+  public double getRightDistanceInches() {
+    return rotationsToInches(mDrive_Left_Master.getSelectedSensorPosition()/39321.6);
+  }
+  public double getLeftVelocityInchesPerSec(int encoderRaw) {
+    leftveloIPS_ = encoderRaw * (10.0 * ((20.0/64.0) * (12.0/36.0)) * (6.25*Math.PI) / 4096.0);
+    return leftveloIPS_;
+  }
+  public double getRightVelocityInchesPerSec(int encoderRaw) {
+    rightveloIPS_ = encoderRaw * (10.0 * ((20.0/64.0) * (12.0/36.0)) * (6.25*Math.PI) / 4096.0);
+    return rightveloIPS_;
+  }
+  public double getVelocityInchesPerSec(int encoderRaw) {
+    veloIPS_ = encoderRaw * (10.0 * ((20.0/64.0) * (12.0/36.0)) * (6.25*Math.PI) / 4096.0);
+    return veloIPS_;
+  }
+  private double rotationsToInches(double rotations) {
+    return rotations * (Constants.kDriveWheelDiameterInches * Math.PI);
+  }
+  private double inchesPerSecondToVelo(double inches_per_second) {
+    return inches_per_second * Constants.kRatioFactor;
+  }
+  public void resetPosition() {
+    resetEncoders();
+    ahrs.reset();
+  }
 @Override
 public void periodic() {
   // This method will be called once per scheduler run
